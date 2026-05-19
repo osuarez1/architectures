@@ -1,0 +1,43 @@
+# Repository tracks only: README.md, wiki/, candidates/.keep, and .gitignore
+# candidates/* (except .keep) = raw architecture inbox — never commit
+# Everything else at repo root is local-only (editor/agent config)
+
+/*
+!/.gitignore
+!/README.md
+!/wiki/
+!/wiki/**
+!/candidates/
+/candidates/*
+!/candidates/.keep
+
+# Secrets (anywhere)
+.env
+.env.*
+!.env.example
+secrets/
+credentials/
+*.local.md
+
+# Build / runtime artifacts (should not appear)
+node_modules/
+dist/
+__pycache__/
+.venv/
+
+# OS and editors
+.DS_Store
+*.swp
+*.swo
+.idea/
+
+# Local-only root files (explicit; covered by /* but documented)
+/AGENTS.md
+/SECURITY.md
+/CONVENTION.md
+/ACONVENTION.md
+/CLAUDE.md
+/.cursorrules
+/.cursor/
+/.vscode/
+/architectures.code-workspace
