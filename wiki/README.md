@@ -36,7 +36,7 @@ bin/sync_wiki.sh --dry-run  # copy to .wiki-publish; no push
 bin/sync_wiki.sh            # copy, commit, push to GitHub Wiki
 ```
 
-The script reads `wiki/publish.map`, clones or updates `.wiki-publish/`, and commits to **architectures.wiki** with **Conventional Commits** (`docs(wiki): sync …`) — no `Co-authored-by:` or `Trello-Card:` trailers. Override message: `WIKI_COMMIT_MSG='docs(wiki): sync Home' bin/sync_wiki.sh`.
+The script reads `wiki/publish.map`, clones or updates `.wiki-publish/`, strips blockquote lines that start with `> Publish to GitHub Wiki` (editor-only flat-name hint; **Public-safe** banners stay), and commits to **architectures.wiki** with **Conventional Commits** (`docs(wiki): sync …`) — no `Co-authored-by:` or `Trello-Card:` trailers. Override message: `WIKI_COMMIT_MSG='docs(wiki): sync Home' bin/sync_wiki.sh`.
 
 Do **not** copy this `wiki/README.md` file to GitHub Wiki.
 

@@ -131,8 +131,17 @@ ensure_wiki_clone() {
   fi
 }
 
+# Remove editor-only "Publish to GitHub Wiki as …" blockquote lines; keep Public-safe banners.
+copy_for_wiki() {
+  local src="$1" dest="$2"
+  awk '
+    /^> [Pp]ublish to GitHub Wiki / { next }
+    { print }
+  ' "$src" > "$dest"
+}
+
 copy_mappings() {
-  echo "=> Copying staged files..."
+  echo "=> Copying staged files (stripping publish-to-wiki banner lines)..."
   while IFS='|' read -r rel dest_base || [[ -n "${rel:-}" ]]; do
     [[ -z "${rel:-}" ]] && continue
     [[ "$rel" =~ ^[[:space:]]*# ]] && continue
@@ -148,7 +157,7 @@ copy_mappings() {
       echo "  warning: missing ${src}, skipping" >&2
       continue
     fi
-    cp "$src" "$dest"
+    copy_for_wiki "$src" "$dest"
     echo "  ${rel} -> ${dest_base}.md"
   done < "$MAP_FILE"
 }
