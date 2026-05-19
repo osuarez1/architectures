@@ -5,11 +5,12 @@ Public **documentation-only** repository. The git tree contains only:
 | Path | Purpose |
 |------|---------|
 | **`README.md`** | This file — repo purpose and security rules |
-| **`wiki/`** | Sanitized architecture (staging for [GitHub Wiki](wiki/README.md)) |
+| **`wiki/`** | Sanitized architecture (staging for [GitHub Wiki](wiki/README.md)); includes `publish.map` |
+| **`bin/sync_wiki.sh`** | Optional publish helper → GitHub Wiki (see [wiki/README.md](wiki/README.md)) |
 | **`candidates/`** | Local inbox for raw docs before sanitization — **only `.keep` is in git** |
 | **`.gitignore`** | Keeps the repo minimal |
 
-No application source, Docker, CI, or runnable artifacts. Runnable systems live in a private **application monorepo**.
+No application source, Docker, CI pipelines, or app runtime. `bin/sync_wiki.sh` is documentation publish tooling only. Runnable systems live in a private **application monorepo**.
 
 ## Quick start
 

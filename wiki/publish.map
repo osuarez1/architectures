@@ -1,0 +1,8 @@
+# Staging path (under wiki/) -> GitHub Wiki page basename (flat .md filename without extension)
+# Keep in sync with the table in wiki/README.md. One mapping per line.
+Home.md|Home
+2026/reporting-ai-agent/README.md|2026-Reporting-AI-Agent
+2026/reporting-ai-agent/ARCHITECTURE.md|2026-Reporting-AI-Agent-Architecture
+2026/reporting-ai-agent/CHAT_PROCESSING.md|2026-Reporting-AI-Agent-Chat-Processing
+2026/reporting-ai-agent/backend.md|2026-Reporting-AI-Agent-Backend
+2026/reporting-ai-agent/frontend.md|2026-Reporting-AI-Agent-Frontend

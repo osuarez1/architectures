@@ -14,6 +14,8 @@ Every page must follow [README.md § Security](https://github.com/osuarez1/archi
 
 ## Publish mapping (flat wiki page names)
 
+**Canonical machine list:** [`wiki/publish.map`](publish.map) — keep this table in sync (one row per map line).
+
 | Staged file | GitHub Wiki page |
 |-------------|------------------|
 | `wiki/Home.md` | Home |
@@ -23,29 +25,37 @@ Every page must follow [README.md § Security](https://github.com/osuarez1/archi
 | `wiki/2026/reporting-ai-agent/backend.md` | 2026-Reporting-AI-Agent-Backend |
 | `wiki/2026/reporting-ai-agent/frontend.md` | 2026-Reporting-AI-Agent-Frontend |
 
+### Publish (script)
+
+From the repository root (after the [security checklist](#security-before-publish)):
+
 ```bash
-git clone https://github.com/osuarez1/architectures.wiki.git
-cd architectures.wiki
-
-cp ../architectures/wiki/Home.md ./Home.md
-cp ../architectures/wiki/2026/reporting-ai-agent/README.md ./2026-Reporting-AI-Agent.md
-cp ../architectures/wiki/2026/reporting-ai-agent/ARCHITECTURE.md ./2026-Reporting-AI-Agent-Architecture.md
-cp ../architectures/wiki/2026/reporting-ai-agent/CHAT_PROCESSING.md ./2026-Reporting-AI-Agent-Chat-Processing.md
-cp ../architectures/wiki/2026/reporting-ai-agent/backend.md ./2026-Reporting-AI-Agent-Backend.md
-cp ../architectures/wiki/2026/reporting-ai-agent/frontend.md ./2026-Reporting-AI-Agent-Frontend.md
-
-git add .
-git commit -m "Sync wiki from architectures repo"
-git push
+chmod +x bin/sync_wiki.sh   # once
+bin/sync_wiki.sh --check    # link grep + map/table parity only
+bin/sync_wiki.sh --dry-run  # copy to .wiki-publish; no push
+bin/sync_wiki.sh            # copy, commit, push to GitHub Wiki
 ```
 
-Do **not** copy this file to GitHub Wiki.
+The script reads `wiki/publish.map`, clones or updates `.wiki-publish/`, and commits to **architectures.wiki** with **Conventional Commits** (`docs(wiki): sync …`) — no `Co-authored-by:` or `Trello-Card:` trailers. Override message: `WIKI_COMMIT_MSG='docs(wiki): sync Home' bin/sync_wiki.sh`.
+
+Do **not** copy this `wiki/README.md` file to GitHub Wiki.
+
+### Agents and assistants
+
+| Step | Action |
+|------|--------|
+| **When** | Run `bin/sync_wiki.sh` only if the user **explicitly** asked to publish to GitHub Wiki in this turn. |
+| **Before sync** | Security checklist above; `bin/sync_wiki.sh --check` must pass. |
+| **This repo (staging)** | Commit with `docs(wiki): …` when the user asked — scope `wiki` for `wiki/**`, per [README § Commits](https://github.com/osuarez1/architectures/blob/main/README.md#commits-and-pull-requests). |
+| **Wiki repo (publish)** | Script default: `docs(wiki): sync …`; subject must stay `docs(wiki):`. |
+| **New page** | Add a line to `wiki/publish.map`, a row to the table above, `[[Page-Name]]` links, and [wiki/Home.md](Home.md). |
 
 ## Adding a new system
 
 1. Create `wiki/YYYY/<project>/` with structural pages per [README.md § Security](https://github.com/osuarez1/architectures/blob/main/README.md#security).
-2. Add rows to the table above and links in `wiki/Home.md`.
+2. Add a line to [`wiki/publish.map`](publish.map), a row to the publish table above, and links in `wiki/Home.md`.
 3. Update root `README.md` documented systems list.
+4. Run `bin/sync_wiki.sh --check` before the first publish.
 
 ## Link conventions (required for every edit)
 
@@ -63,7 +73,7 @@ GitHub Wiki pages are **flat**. Staging lives under `wiki/2026/.../` but publish
 | Repo README / security | `https://github.com/osuarez1/architectures/blob/main/README.md#security` |
 | This publish guide (git only, not on wiki) | `https://github.com/osuarez1/architectures/blob/main/wiki/README.md` |
 
-**New page:** add a row to the publish table, then link with `[[That-Exact-Page-Name]]` everywhere.
+**New page:** add a line to `wiki/publish.map` and a row to the publish table, then link with `[[That-Exact-Page-Name]]` everywhere.
 
 ## Do not
 

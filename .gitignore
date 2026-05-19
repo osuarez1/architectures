@@ -1,4 +1,4 @@
-# Repository tracks only: README.md, wiki/, candidates/.keep, and .gitignore
+# Repository tracks only: README.md, wiki/, bin/, candidates/.keep, and .gitignore
 # candidates/* (except .keep) = raw architecture inbox — never commit
 # Everything else at repo root is local-only (editor/agent config)
 
@@ -7,6 +7,8 @@
 !/README.md
 !/wiki/
 !/wiki/**
+!/bin/
+!/bin/**
 !/candidates/
 /candidates/*
 !/candidates/.keep
@@ -41,3 +43,4 @@ __pycache__/
 /.cursor/
 /.vscode/
 /architectures.code-workspace
+/.wiki-publish/
