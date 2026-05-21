@@ -24,6 +24,8 @@ Every page must follow [README.md § Security](https://github.com/osuarez1/archi
 | `wiki/2026/reporting-ai-agent/CHAT_PROCESSING.md` | 2026-Reporting-AI-Agent-Chat-Processing |
 | `wiki/2026/reporting-ai-agent/backend.md` | 2026-Reporting-AI-Agent-Backend |
 | `wiki/2026/reporting-ai-agent/frontend.md` | 2026-Reporting-AI-Agent-Frontend |
+| `wiki/2025/subtitle-file-analyzer/README.md` | 2025-Subtitle-File-Analyzer |
+| `wiki/2025/subtitle-file-analyzer/ARCHITECTURE.md` | 2025-Subtitle-File-Analyzer-Architecture |
 
 ### Publish (script)
 

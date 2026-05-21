@@ -23,6 +23,7 @@ No application source, Docker, CI pipelines, or app runtime. `bin/sync_wiki.sh` 
 | Wiki path | Summary |
 |-----------|---------|
 | [wiki/2026/reporting-ai-agent/](wiki/2026/reporting-ai-agent/) | Reporting agent — architecture, chat flow, backend, frontend |
+| [wiki/2025/subtitle-file-analyzer/](wiki/2025/subtitle-file-analyzer/) | Subtitle file analyzer — WebVTT → structured metadata |
 
 ## What belongs in `wiki/`
 

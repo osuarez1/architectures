@@ -14,6 +14,11 @@ The git repository contains only [README.md](https://github.com/osuarez1/archite
 
 [Publish instructions](https://github.com/osuarez1/architectures/blob/main/wiki/README.md)
 
+## 2025 — Subtitle file analyzer
+
+- [[2025-Subtitle-File-Analyzer]] — overview
+- [[2025-Subtitle-File-Analyzer-Architecture]] — WebVTT ingestion, generative analysis, persistence
+
 ## Security
 
 No secrets, source paths, env tables, or production identifiers. See [README.md#security](https://github.com/osuarez1/architectures/blob/main/README.md#security).
