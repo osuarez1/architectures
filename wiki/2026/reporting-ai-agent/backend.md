@@ -52,7 +52,7 @@ flowchart LR
 |------|------|
 | Health | Process and dependency checks |
 | Chat | Stream, sessions, history |
-| Cohort | Analytic cohort requests |
+| Cohort | Filtered matrix and/or LTV projection; form-options and subregions; drill-down; LTV baseline refresh |
 | Admin | Configuration and privileged operations |
 
 Exact paths and admin capabilities are defined in the **application monorepo**.
