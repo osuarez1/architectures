@@ -60,6 +60,7 @@ sequenceDiagram
 | Immediate SSE | Acknowledge receipt; emit “loading context” |
 | Context build | Token-budgeted conversation history + session flags |
 | Route | Choose execution path (see below) |
+| User preferences | Overrides for deep analysis, large exports, audit queries, and chart analysis suppression when entering analytics |
 
 ---
 
@@ -75,9 +76,21 @@ Routing is **ordered**: first match wins. Optional second tier (LLM classifier) 
 | 4 | Ambiguous + classifier enabled | Classifier → chitchat, clarify, or analytics | varies |
 | 5 | Ambiguous + classifier off | Default to analytics | `ambiguous` → analytics |
 
-**Session awareness:** Short follow-ups after a prior chart/SQL turn (e.g. “why?”) stay on **analytics**, not chitchat.
+**Session awareness:** Short follow-ups (e.g. “why?”, ≤ ~80 chars) after a prior chart/SQL turn stay on **analytics**, not chitchat. Prior analytics is detected when any earlier turn in the session had SQL, chart data, or a non–fast-path route (excluding prior discovery/chitchat).
 
-**Discovery vs analytics:** Catalog questions avoid the full SQL agent; questions that imply metrics or charts route to analytics.
+**Discovery vs analytics:** Catalog phrasing (“what can I ask”, “what data is available”) routes to discovery; execution-style wording (metrics, charts, date ranges) forces analytics even when ambiguous.
+
+**Chitchat gate:** Social/ack messages only when short (≤ ~220 chars), no data/discovery regex hit, and (with uploads) only explicit social patterns—not vague short questions.
+
+**Classifier (optional):** When fast rules return ambiguous, a second-tier LLM may route to chitchat, clarify, or analytics. Discovery/capability questions must not be classified as chitchat.
+
+| Setting (conceptual) | Default | Effect |
+|----------------------|---------|--------|
+| Turn classifier | off | LLM tier for ambiguous messages |
+| Turn planner | off | Optional plan step before agent |
+| Classifier confidence | ~0.72 | Cutoff for classifier routing |
+
+Feature flags are configured in the **application monorepo**, not duplicated here.
 
 ---
 
@@ -116,7 +129,11 @@ flowchart LR
 | **Tools** | Query lake, lookups, uploads |
 | **Visualizer** | Chart/KPI component for the UI |
 
-**Post-graph (conceptual):** Optional large exports to object storage; chart type chosen from result shape and user intent; presigned links for embeddable HTML when needed.
+**Post-graph (conceptual):** Optional large exports to object storage; chart type chosen from result shape and user intent; presigned links for embeddable HTML when needed. Large query results may use object-storage CSV with iframe embeds; native heatmaps are used only when row shape fits UI limits.
+
+#### Chart disambiguation
+
+When the user **explicitly** requests a chart type the result set cannot support, the stream returns a **disambiguation** payload (no substitute chart). The user picks an option; the follow-up turn reuses **raw data** from the prior analytics turn rather than re-querying from scratch.
 
 ---
 
@@ -137,7 +154,17 @@ The stream emits **phases** the UI can show in an activity panel and audit modal
 | `viz` | Formatting chart or table for UI |
 | `artifact` | Downloads / embed URLs |
 
-Nested **reason** substeps group under **sql** in the audit UI during analytics turns.
+Nested **reason** substeps group under **sql** in the audit UI during analytics turns (live panel and audit modal).
+
+| Substep (conceptual) | Purpose |
+|----------------------|---------|
+| `memory` | Load semantic lessons / past successes |
+| `llm` | Primary reasoning model call |
+| `sql_correction` | Retry when model emits SQL outside tools |
+| `validate` | Syntax check per warehouse query |
+| `validation_retry` | Second model pass after validation failure |
+
+Labels may include attempt numbers when the graph loops agent → tools → agent after errors.
 
 ---
 
@@ -199,6 +226,47 @@ Optional **lessons** and past successes can be retrieved by embedding similarity
 | `Show revenue by month` | Analytics | Data / chart intent |
 | `Why?` (after a chart) | Analytics | Session follow-up |
 | `Why?` (no prior data turn) | Analytics (default) | Not treated as pure chitchat |
+| `Hi` (after a discovery answer) | Chitchat | Social wins; discovery does not block chitchat |
+
+---
+
+## Filtered cohort report (non-stream path)
+
+Analysts can open a **structured cohort form** from the chat composer (separate from typing a natural-language question). This path **does not** use the chat stream API or LangGraph; it uses the **cohort API** through the BFF. When a session id is supplied, the backend still persists a normal **chat** interaction so the thread and audit UI stay consistent.
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant FE as Next.js UI
+  participant PX as BFF proxy
+  participant CO as Cohort API
+  participant DB as PostgreSQL
+
+  U->>FE: Open cohort form
+  FE->>FE: Review filters and confirm
+  FE->>PX: POST cohort request + session id
+  PX->>CO: Authenticated cohort run
+  CO->>CO: SQL over lake + matrix transform
+  CO->>DB: Save chat interaction
+  CO-->>FE: Matrix / LTV payload + processing steps
+  FE->>FE: Append user + agent messages
+  FE-->>U: Matrix chart + optional LTV panel
+```
+
+| Aspect | NL chat (stream) | Filtered cohort tool |
+|--------|------------------|----------------------|
+| Entry | Typed question | Composer form + confirm step |
+| API | Chat stream (SSE) | Cohort API (single response) |
+| Agent | LangGraph + tools | Dedicated cohort pipeline |
+| Typical output | Chart from agent tools | Retention matrix (+ optional LTV projection) |
+| Streaming | SSE phases | No SSE; `processing_steps` on POST for audit |
+| Routing metadata | `analytics`, etc. | `cohort_report` / `filtered_cohort` |
+
+**Deliverables (conceptual):** User selects matrix, LTV projection, or both; optional expert-analysis prose per deliverable. Form options (date bounds, plan filters, marketing dimensions) come from cohort form-options APIs.
+
+**Contrast:** Natural-language cohort questions (e.g. heatmaps by month) still use the **analytics** path and warehouse tools. The tool path uses the **retention matrix** cell model and shared admin-style cohort filtering—not the same shape as ad-hoc NL cohort charts.
+
+**Drill-down:** Matrix cells can open a drawer with per-span revenue and optional projected metrics; separate from the LTV projection slider curve.
 
 ---
 
