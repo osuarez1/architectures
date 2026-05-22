@@ -11,7 +11,7 @@ Diagrams: [[2026-Reporting-AI-Agent-Architecture]] · Chat flow: [[2026-Reportin
 
 | Concern | Behavior |
 |---------|----------|
-| UI | Chat, sessions, admin screens, and **filtered cohort form** in the chat composer |
+| UI | Chat, sessions, admin screens, and **filtered cohort form** (confirm step, matrix fullscreen/zoom, drill-down drawer) in the chat composer |
 | BFF | Forwards authenticated requests to the backend |
 | Auth | Session from the main portal; sensitive calls avoid exposing backend URLs to the client |
 
