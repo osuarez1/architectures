@@ -9,7 +9,7 @@ Natural-language **reporting and analytics** stack: browser UI, API with an agen
 | Page | Content |
 |------|---------|
 | [[2026-Reporting-AI-Agent-Architecture]] | **Canonical diagrams** — runtime, lake, deployment patterns |
-| [[2026-Reporting-AI-Agent-Chat-Processing]] | Chat routing, execution paths, streaming |
+| [[2026-Reporting-AI-Agent-Chat-Processing]] | Chat routing, streaming, cohort form (non-stream path) |
 | [[2026-Reporting-AI-Agent-Backend]] | Backend structure and responsibilities |
 | [[2026-Reporting-AI-Agent-Frontend]] | Frontend structure and BFF pattern |
 
