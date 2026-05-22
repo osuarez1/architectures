@@ -112,6 +112,20 @@ flowchart LR
 - Browser uses the **BFF**, not the API origin, for privileged flows.
 - **Redis** is backend-only (cache, rate limits, locks).
 
+**Filtered cohort tool:** The chat composer can open a structured cohort form that posts through the BFF to the **cohort API** (not the chat stream). When bound to a session, results persist as chat interactions with a retention-matrix visualization. See [[2026-Reporting-AI-Agent-Chat-Processing]].
+
+```mermaid
+flowchart LR
+  CHAT["Chat UI\ncohort form"]
+  PX2["BFF proxy"]
+  COH["Cohort API"]
+  DK2["DuckDB lake"]
+  PG2["PostgreSQL\nchat history"]
+  CHAT --> PX2 --> COH
+  COH --> DK2
+  COH --> PG2
+```
+
 ---
 
 ## 3. Local development (logical pattern)
